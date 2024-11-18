@@ -1,0 +1,9 @@
+ipython
+githubkit
+tqdm
+coloredlogs
+maturin
+patchelf
+pip
+pandas
+matplotlib

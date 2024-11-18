@@ -1,7 +1,7 @@
 import asyncio
 import argparse
 import logging
-from git_analyzer import analyze_git_repo
+from repo_scan_rs import analyze_git_repo
 import os
 import re
 from datetime import datetime
@@ -13,7 +13,6 @@ import csv
 from collections import defaultdict
 from typing import DefaultDict, Dict, List, Set, Tuple, Optional, Union
 
-import git
 from githubkit import GitHub, Response
 from githubkit.versions.latest.models import Repository, FullRepository, SimpleUser
 from tqdm.asyncio import tqdm as tqdm_asyncio  # Fixed import
@@ -209,7 +208,7 @@ class GitHubLocTracker:
             ssh_url = f"git@github.com:{repo.full_name}.git"
             
             process = await asyncio.create_subprocess_exec(
-                'git', 'clone', '--bare', '--filter=blob:none', ssh_url, repo_path,
+                'git', 'clone', ssh_url, repo_path,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
@@ -417,6 +416,7 @@ class GitHubLocTracker:
 
 async def main():
     parser = argparse.ArgumentParser(description='Analyze GitHub repository contributions')
+    parser.add_argument('--path', help='Path to local repository')
     parser.add_argument('--repo', help='Analyze single repository in format owner/repo')
     parser.add_argument('--token', help='GitHub token', required=True)
     parser.add_argument('--output', help='Output directory', default="github_stats")
